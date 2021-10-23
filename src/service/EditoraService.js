@@ -1,8 +1,8 @@
 import { http } from './config';
 
 export default {
-    findAll: () => {
-        return http.get('/editoras');
+    findAll: params => {
+        return http.get('/editoras', { params });
     },
     save: editora => {
         return http.post('/editoras', editora);
