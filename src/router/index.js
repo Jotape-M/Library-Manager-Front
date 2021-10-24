@@ -20,6 +20,10 @@ const routes = [
         path: '/livros',
         component: () => import('../views/LivroView'),
     },
+    {
+        path: '/alugueis',
+        component: () => import('../views/AluguelView'),
+    },
 ];
 
 const router = new VueRouter({

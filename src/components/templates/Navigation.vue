@@ -42,7 +42,7 @@ export default {
             { title: 'Editora', icon: 'mdi-office-building', to: '/editoras' },
             { title: 'Livro', icon: 'mdi-book-multiple', to: '/livros' },
             { title: 'Usuário', icon: 'mdi-account-multiple', to: '/usuarios' },
-            { title: 'Aluguel', icon: 'mdi-calendar-multiple', to: '' },
+            { title: 'Aluguel', icon: 'mdi-calendar-multiple', to: '/alugueis' },
         ],
     }),
 };
