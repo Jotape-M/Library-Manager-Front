@@ -111,7 +111,7 @@
                         <v-select
                             v-model="pageSize"
                             :items="pageSizes"
-                            label="Items por Pagina"
+                            label="Items por Página"
                             @change="handlePageSizeChange"
                             outlined
                         ></v-select>
@@ -163,7 +163,7 @@ export default {
             },
             { text: 'Nome', value: 'nome' },
             { text: 'Cidade', value: 'cidade' },
-            { text: 'Actions', value: 'actions', sortable: false },
+            { text: 'Ações', value: 'actions', sortable: false },
         ],
         rules: [
             value => !!value || 'Campo obrigatório',
@@ -264,14 +264,12 @@ export default {
             if (this.$refs.form.validate()) {
                 if (!this.editora.id) {
                     editoraService.update(this.editora).then(() => {
-                        this.editora.nome = '';
-                        this.editora.cidade = '';
+                        this.editora = {};
                         this.initialize();
                     });
                 } else {
                     editoraService.save(this.editora).then(() => {
-                        this.editora.nome = '';
-                        this.editora.cidade = '';
+                        this.editora = {};
                         this.initialize();
                     });
                 }

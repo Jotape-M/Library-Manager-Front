@@ -1,8 +1,8 @@
 import { http } from './config';
 
 export default {
-    findAll: () => {
-        return http.get('/livros');
+    findAll: params => {
+        return http.get('/livros', { params });
     },
     save: livro => {
         return http.post('/livros', livro);
