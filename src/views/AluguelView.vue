@@ -27,7 +27,7 @@
                         <v-dialog v-model="dialog" max-width="500px">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-                                    Nova Editora
+                                    Novo Aluguel
                                 </v-btn>
                             </template>
                             <v-card>
@@ -141,6 +141,38 @@
                                                     </v-menu>
                                                 </v-col>
                                             </v-row>
+                                            <v-row>
+                                                <v-col cols="12">
+                                                    <v-menu
+                                                        v-model="menu"
+                                                        :close-on-content-click="false"
+                                                        :nudge-right="40"
+                                                        transition="scale-transition"
+                                                        offset-y
+                                                        min-width="auto"
+                                                    >
+                                                        <template v-slot:activator="{ on, attrs }">
+                                                            <v-text-field
+                                                                v-model="aluguel.dataDevolucao"
+                                                                label="Lançamento"
+                                                                append-icon="mdi-calendar"
+                                                                readonly
+                                                                outlined
+                                                                hint="Selecione a data de lançamento"
+                                                                v-bind="attrs"
+                                                                @blur="dateDevolucao = parseDate(dateFormatted)"
+                                                                v-on="on"
+                                                            ></v-text-field>
+                                                        </template>
+                                                        <v-date-picker
+                                                            v-model="dateDevolucao"
+                                                            @input="menu = false"
+                                                            no-title
+                                                            scrollable
+                                                        ></v-date-picker>
+                                                    </v-menu>
+                                                </v-col>
+                                            </v-row>
                                         </v-container>
                                     </v-form>
                                 </v-card-text>
@@ -230,6 +262,7 @@ export default {
         usuarios: [],
         dateAluguel: '',
         datePrevisao: '',
+        dateDevolucao: '',
         dateFormatted: '',
         totalAlugueis: 0,
         page: 1,
@@ -288,6 +321,10 @@ export default {
 
         datePrevisao(val) {
             this.aluguel.dataPrevisao = this.formatDate(this.datePrevisao);
+        },
+
+        dateDevolucao(val) {
+            this.aluguel.dataDevolucao = this.formatDate(this.dateDevolucao);
         },
     },
 
