@@ -12,7 +12,7 @@
             >
                 <template v-slot:top>
                     <v-toolbar flat class="blue-grey darken-3">
-                        <v-toolbar-title class="white--text">Editoras</v-toolbar-title>
+                        <v-toolbar-title class="white--text">Alugueis</v-toolbar-title>
                         <v-divider class="mx-4 white" inset vertical></v-divider>
                         <v-text-field
                             v-model="search"
