@@ -45,6 +45,7 @@
                                                         item-text="nome"
                                                         item-value="id"
                                                         label="Escolha um livro"
+                                                        :rules="[rules.required]"
                                                         outlined
                                                     >
                                                         <template slot="selection" slot-scope="livros">
@@ -64,7 +65,8 @@
                                                         :items="usuarios"
                                                         item-text="nome"
                                                         item-value="id"
-                                                        label="Escolha um livro"
+                                                        label="Escolha um usuario"
+                                                        :rules="[rules.required]"
                                                         outlined
                                                     >
                                                         <template slot="selection" slot-scope="usuarios">
@@ -80,7 +82,7 @@
                                             <v-row>
                                                 <v-col cols="12">
                                                     <v-menu
-                                                        v-model="menu"
+                                                        v-model="menuAluguel"
                                                         :close-on-content-click="false"
                                                         :nudge-right="40"
                                                         transition="scale-transition"
@@ -90,11 +92,12 @@
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-text-field
                                                                 v-model="aluguel.dataAluguel"
-                                                                label="Lançamento"
+                                                                label="Data de aluguel"
                                                                 append-icon="mdi-calendar"
                                                                 readonly
                                                                 outlined
-                                                                hint="Selecione a data de lançamento"
+                                                                :rules="[rules.required]"
+                                                                hint="Selecione a data de aluguel"
                                                                 v-bind="attrs"
                                                                 @blur="dateAluguel = parseDate(dateFormatted)"
                                                                 v-on="on"
@@ -102,7 +105,7 @@
                                                         </template>
                                                         <v-date-picker
                                                             v-model="dateAluguel"
-                                                            @input="menu = false"
+                                                            @input="menuAluguel = false"
                                                             no-title
                                                             scrollable
                                                         ></v-date-picker>
@@ -112,7 +115,7 @@
                                             <v-row>
                                                 <v-col cols="12">
                                                     <v-menu
-                                                        v-model="menu"
+                                                        v-model="menuPrevisao"
                                                         :close-on-content-click="false"
                                                         :nudge-right="40"
                                                         transition="scale-transition"
@@ -122,11 +125,12 @@
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-text-field
                                                                 v-model="aluguel.dataPrevisao"
-                                                                label="Lançamento"
+                                                                label="Data de previsão"
                                                                 append-icon="mdi-calendar"
                                                                 readonly
                                                                 outlined
-                                                                hint="Selecione a data de lançamento"
+                                                                :rules="[rules.required]"
+                                                                hint="Selecione a data de previsão"
                                                                 v-bind="attrs"
                                                                 @blur="datePrevisao = parseDate(dateFormatted)"
                                                                 v-on="on"
@@ -134,9 +138,10 @@
                                                         </template>
                                                         <v-date-picker
                                                             v-model="datePrevisao"
-                                                            @input="menu = false"
+                                                            @input="menuPrevisao = false"
                                                             no-title
                                                             scrollable
+                                                            :min="dateAluguel"
                                                         ></v-date-picker>
                                                     </v-menu>
                                                 </v-col>
@@ -144,7 +149,7 @@
                                             <v-row>
                                                 <v-col cols="12">
                                                     <v-menu
-                                                        v-model="menu"
+                                                        v-model="menuDevolucao"
                                                         :close-on-content-click="false"
                                                         :nudge-right="40"
                                                         transition="scale-transition"
@@ -154,11 +159,11 @@
                                                         <template v-slot:activator="{ on, attrs }">
                                                             <v-text-field
                                                                 v-model="aluguel.dataDevolucao"
-                                                                label="Lançamento"
+                                                                label="Data de devolução"
                                                                 append-icon="mdi-calendar"
                                                                 readonly
                                                                 outlined
-                                                                hint="Selecione a data de lançamento"
+                                                                hint="Selecione a data de devolução"
                                                                 v-bind="attrs"
                                                                 @blur="dateDevolucao = parseDate(dateFormatted)"
                                                                 v-on="on"
@@ -166,8 +171,9 @@
                                                         </template>
                                                         <v-date-picker
                                                             v-model="dateDevolucao"
-                                                            @input="menu = false"
+                                                            @input="menuDevolucao = false"
                                                             no-title
+                                                            :min="dateAluguel"
                                                             scrollable
                                                         ></v-date-picker>
                                                     </v-menu>
@@ -256,9 +262,12 @@ export default {
         dialog: false,
         dialogDelete: false,
         loading: true,
+        menuAluguel: false,
+        menuPrevisao: false,
+        menuDevolucao: false,
         search: '',
         alugueis: [],
-        livro: [],
+        livros: [],
         usuarios: [],
         dateAluguel: '',
         datePrevisao: '',
@@ -293,16 +302,15 @@ export default {
             { text: 'Devolução', value: 'dataDevolucao' },
             { text: 'Actions', value: 'actions', sortable: false },
         ],
-        rules: [
-            value => !!value || 'Campo obrigatório',
-            value => (value && value.length >= 3) || 'No mínimo 3 caracteres',
-            value => (value && value.length <= 40) || 'No máximo 40 caracteres',
-        ],
+        rules: {
+            required: value => !!value || 'Campo obrigatório',
+            datePrevisao: value => value > item.dataAluguel || 'Previsão menor que aluguel',
+        },
     }),
 
     computed: {
         formTitle() {
-            return !this.aluguel.id ? 'Nova editora' : 'Editar editora';
+            return !this.aluguel.id ? 'Novo Aluguel' : 'Editar Aluguel';
         },
     },
 
@@ -329,9 +337,9 @@ export default {
     },
 
     created() {
-        this.initialize();
         this.findAllLivros();
         this.findAllUsuarios();
+        this.initialize();
     },
 
     methods: {

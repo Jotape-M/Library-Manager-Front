@@ -62,7 +62,7 @@
                                                     label="Endereço"
                                                     :rules="[rules.required, rules.counterMin, rules.counterMax50]"
                                                     outlined
-                                                    hint="Digite a cidade da usuario"
+                                                    hint="Digite o endereço do usuario"
                                                     counter="50"
                                                 ></v-text-field>
                                             </v-col>
@@ -74,7 +74,7 @@
                                                     label="Email"
                                                     :rules="[rules.email, rules.counterMax50]"
                                                     outlined
-                                                    hint="Digite a cidade da usuario"
+                                                    hint="Digite o e-mail da usuario"
                                                     counter="50"
                                                 ></v-text-field>
                                             </v-col>

@@ -34,7 +34,7 @@
                                                         label="Nome"
                                                         :rules="[rules.required, rules.counterMin, rules.counterMax40]"
                                                         outlined
-                                                        hint="Digite o nome da livro"
+                                                        hint="Digite o nome do livro"
                                                         counter="40"
                                                     ></v-text-field>
                                                 </v-col>
@@ -46,7 +46,7 @@
                                                         label="Autor"
                                                         :rules="[rules.required, rules.counterMin, rules.counterMax40]"
                                                         outlined
-                                                        hint="Digite o autor da livro"
+                                                        hint="Digite o autor do livro"
                                                         counter="40"
                                                     ></v-text-field>
                                                 </v-col>
@@ -246,7 +246,7 @@ export default {
 
     computed: {
         formTitle() {
-            return !this.livro.id ? 'Nova livro' : 'Editar livro';
+            return !this.livro.id ? 'Novo livro' : 'Editar livro';
         },
     },
 
@@ -308,7 +308,7 @@ export default {
         editItem(item) {
             this.livro.id = item.id;
             this.livro.nome = item.nome;
-            this.livro.autor = item.lancamento;
+            this.livro.autor = item.autor;
             this.livro.quantidade = item.quantidade;
             this.livro.lancamento = item.lancamento;
             this.livro.editora = item.editora;
