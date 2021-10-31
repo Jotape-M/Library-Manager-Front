@@ -196,7 +196,6 @@ export default {
             const params = this.getRequestParams(this.page, this.pageSize);
             this.loading = true;
             editoraService.findAll(params).then(res => {
-                console.log(res.data);
                 const { totalElements, totalPages, content } = res.data;
                 this.editoras = content;
                 this.totalEditoras = totalElements;
@@ -241,10 +240,16 @@ export default {
         },
 
         deleteItemConfirm() {
-            editoraService.delete(this.editora.id).then(() => {
-                this.editora = {};
-                this.initialize();
-            });
+            editoraService
+                .delete(this.editora.id)
+                .then(() => {
+                    Toast.fire('Editora deletada com sucesso', '', 'success');
+                    this.editora = {};
+                    this.initialize();
+                })
+                .catch(error => {
+                    Toast.fire('Editora não pode ser deletada', '', 'error');
+                });
             this.dialogDelete = false;
         },
 
@@ -262,13 +267,15 @@ export default {
 
         save() {
             if (this.$refs.form.validate()) {
-                if (!this.editora.id) {
+                if (this.editora.id) {
                     editoraService.update(this.editora).then(() => {
+                        Toast.fire('Editora alterada com sucesso', '', 'success');
                         this.editora = {};
                         this.initialize();
                     });
                 } else {
                     editoraService.save(this.editora).then(() => {
+                        Toast.fire('Editora cadastrada com sucesso', '', 'success');
                         this.editora = {};
                         this.initialize();
                     });

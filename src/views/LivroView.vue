@@ -101,6 +101,7 @@
                                                             @input="menu = false"
                                                             no-title
                                                             scrollable
+                                                            :max="todayDate"
                                                         ></v-date-picker>
                                                     </v-menu>
                                                 </v-col>
@@ -206,6 +207,7 @@ export default {
         totalPages: 0,
         pageSize: 5,
         pageSizes: [5, 10, 15],
+        todayDate: new Date().toISOString().slice(0, 10),
         date: '',
         dateFormatted: '',
         livro: {
