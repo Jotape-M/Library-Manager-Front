@@ -270,10 +270,15 @@ export default {
         },
 
         deleteItemConfirm() {
-            UsuarioService.delete(this.usuario.id).then(() => {
-                this.usuario = {};
-                this.initialize();
-            });
+            UsuarioService.delete(this.usuario.id)
+                .then(() => {
+                    Toast.fire('Usuário deletado com sucesso', '', 'error');
+                    this.usuario = {};
+                    this.initialize();
+                })
+                .catch(error => {
+                    this.$swal('Usuário não pode ser deletado', 'Esse usuário está vinculado a um aluguel', 'error');
+                });
             this.dialogDelete = false;
         },
 
@@ -291,13 +296,15 @@ export default {
 
         save() {
             if (this.$refs.form.validate()) {
-                if (!this.usuario.id) {
+                if (this.usuario.id) {
                     UsuarioService.update(this.usuario).then(() => {
+                        Toast.fire('Usuário alterado com sucesso', '', 'success');
                         this.usuario = {};
                         this.initialize();
                     });
                 } else {
                     UsuarioService.save(this.usuario).then(() => {
+                        Toast.fire('Usuário cadastrado com sucesso', '', 'success');
                         this.usuario = {};
                         this.initialize();
                     });
