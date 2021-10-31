@@ -324,10 +324,16 @@ export default {
         },
 
         deleteItemConfirm() {
-            livroService.delete(this.livro.id).then(() => {
-                this.livro = {};
-                this.initialize();
-            });
+            livroService
+                .delete(this.livro.id)
+                .then(() => {
+                    Toast.fire('Livro deletado com sucesso', '', 'success');
+                    this.livro = {};
+                    this.initialize();
+                })
+                .catch(error => {
+                    this.$swal('Livro não pode ser deletado', 'Esse livro está vinculado a um aluguel', 'error');
+                });
             this.dialogDelete = false;
         },
 
@@ -345,13 +351,15 @@ export default {
 
         save() {
             if (this.$refs.form.validate()) {
-                if (!this.livro.id) {
+                if (this.livro.id) {
                     livroService.update(this.livro).then(() => {
+                        Toast.fire('Livro alterado com sucesso', '', 'success');
                         this.livro = {};
                         this.initialize();
                     });
                 } else {
                     livroService.save(this.livro).then(() => {
+                        Toast.fire('Livro cadastrado com sucesso', '', 'success');
                         this.livro = {};
                         this.initialize();
                     });

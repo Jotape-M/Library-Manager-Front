@@ -248,7 +248,7 @@ export default {
                     this.initialize();
                 })
                 .catch(error => {
-                    Toast.fire('Editora não pode ser deletada', '', 'error');
+                    this.$swal('Editora não pode ser deletada', 'Essa editora está vinculada a um livro', 'error');
                 });
             this.dialogDelete = false;
         },
