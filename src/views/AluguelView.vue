@@ -196,8 +196,11 @@
                     </v-toolbar>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon small class="mr-2" @click="editItem(item)">
+                    <v-icon size="20" class="mr-2" @click="editItem(item)">
                         mdi-pencil
+                    </v-icon>
+                    <v-icon size="20" v-show="!item.dataDevolucao" class="mr-2" @click="returnBook(item)">
+                        mdi-book-check-outline
                     </v-icon>
                 </template>
                 <template v-slot:no-data>
@@ -290,7 +293,6 @@ export default {
         ],
         rules: {
             required: value => !!value || 'Campo obrigatório',
-            datePrevisao: value => value > item.dataAluguel || 'Previsão menor que aluguel',
         },
     }),
 
@@ -333,7 +335,6 @@ export default {
             const params = this.getRequestParams(this.page, this.pageSize);
             this.loading = true;
             aluguelService.findAll(params).then(res => {
-                console.log(res.data);
                 const { totalElements, totalPages, content } = res.data;
                 this.alugueis = content;
                 this.totalAlugueis = totalElements;
@@ -379,10 +380,27 @@ export default {
             this.dialog = true;
         },
 
+        returnBook(item) {
+            this.aluguel.id = item.id;
+            this.aluguel.usuarioId = item.usuario.id;
+            this.aluguel.usuario = item.usuario;
+            this.aluguel.livroId = item.livro.id;
+            this.aluguel.livro = item.livro;
+            this.aluguel.dataAluguel = item.dataAluguel;
+            this.aluguel.dataPrevisao = item.dataPrevisao;
+            this.aluguel.dataDevolucao = this.formatDate(new Date().toISOString().slice(0, 10));
+            aluguelService.update(this.aluguel).then(() => {
+                this.aluguel = {};
+                this.initialize();
+                Toast.fire('Livro devolvido com sucesso', '', 'success');
+            });
+        },
+
         close() {
             this.dialog = false;
             this.$refs.form.resetValidation();
             if (!this.dialog) {
+                this.dateAluguel = '';
                 this.aluguel = {};
             }
         },
@@ -393,13 +411,15 @@ export default {
 
         save() {
             if (this.$refs.form.validate()) {
-                if (!this.aluguel.id) {
+                if (this.aluguel.id) {
                     aluguelService.update(this.aluguel).then(() => {
+                        Toast.fire('Aluguel alterado com sucesso', '', 'success');
                         this.aluguel = {};
                         this.initialize();
                     });
                 } else {
                     aluguelService.save(this.aluguel).then(() => {
+                        Toast.fire('Aluguel cadastrado com sucesso', '', 'success');
                         this.aluguel = {};
                         this.initialize();
                     });
@@ -411,7 +431,9 @@ export default {
 
         findAllLivros() {
             livroService.findAll().then(res => {
-                this.livros = res.data.content;
+                this.livros = res.data.content.filter(livro => {
+                    return livro.quantidade > 0;
+                });
             });
         },
 
@@ -426,6 +448,13 @@ export default {
 
             const [year, month, day] = date.split('-');
             return `${day}-${month}-${year}`;
+        },
+
+        formatDate2(date) {
+            if (!date) return null;
+
+            const [year, month, day] = date.split('-');
+            return `${year}-${month}-${day}`;
         },
 
         parseDate(date) {
