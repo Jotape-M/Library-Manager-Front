@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card>
+        <v-card rounded="0">
             <v-data-table
                 :headers="headers"
                 :items="editoras"
@@ -11,22 +11,22 @@
                 class="elevation-1"
             >
                 <template v-slot:top>
-                    <v-toolbar flat class="blue-grey darken-3">
+                    <v-toolbar flat class="blue-grey darken-3" rounded="1">
                         <v-toolbar-title class="white--text">Editoras</v-toolbar-title>
                         <v-divider class="mx-4 white" inset vertical></v-divider>
                         <v-text-field
                             v-model="search"
                             append-icon="mdi-magnify"
-                            label="Search"
+                            label="Procurar..."
                             single-line
                             hide-details
                             class="white--text"
-                            color="white"
+                            dark
                         ></v-text-field>
                         <v-spacer></v-spacer>
                         <v-dialog v-model="dialog" max-width="500px">
                             <template v-slot:activator="{ on, attrs }">
-                                <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+                                <v-btn color="blue-grey" dark class="mb-2" v-bind="attrs" v-on="on">
                                     Nova Editora
                                 </v-btn>
                             </template>
@@ -45,6 +45,7 @@
                                                         :rules="rules"
                                                         outlined
                                                         hint="Digite o nome da editora"
+                                                        color="blue-grey"
                                                         counter="40"
                                                     ></v-text-field>
                                                 </v-col>
@@ -57,6 +58,7 @@
                                                         :rules="rules"
                                                         outlined
                                                         hint="Digite a cidade da editora"
+                                                        color="blue-grey"
                                                         counter="40"
                                                     ></v-text-field>
                                                 </v-col>
@@ -66,10 +68,10 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" text @click="close">
+                                    <v-btn color="red darken-1" text @click="close">
                                         Cancelar
                                     </v-btn>
-                                    <v-btn color="blue darken-1" text @click="save">
+                                    <v-btn color="green darken-1" text @click="save">
                                         Salvar
                                     </v-btn>
                                 </v-card-actions>
@@ -80,8 +82,8 @@
                                 <v-card-title class="text-h5">Você realmente deseja excluir esse item?</v-card-title>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
-                                    <v-btn color="blue darken-1" text @click="deleteItemConfirm">Confirmar</v-btn>
+                                    <v-btn color="red darken-1" text @click="closeDelete">Cancelar</v-btn>
+                                    <v-btn color="green darken-1" text @click="deleteItemConfirm">Confirmar</v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
                             </v-card>
@@ -89,10 +91,10 @@
                     </v-toolbar>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon small class="mr-2" @click="editItem(item)">
+                    <v-icon size="20" class="mr-2" @click="editItem(item)">
                         mdi-pencil
                     </v-icon>
-                    <v-icon small @click="deleteItem(item)">
+                    <v-icon size="20" @click="deleteItem(item)">
                         mdi-delete
                     </v-icon>
                 </template>
@@ -103,8 +105,8 @@
                 </template>
             </v-data-table>
         </v-card>
-        <v-divider class="white"></v-divider>
-        <v-card>
+        <v-divider></v-divider>
+        <v-card color="blue-grey darken-3" rounded="0">
             <v-col cols="12">
                 <v-row>
                     <v-col cols="4" sm="4">
@@ -114,6 +116,9 @@
                             label="Items por Página"
                             @change="handlePageSizeChange"
                             outlined
+                            item-color="blue-grey"
+                            color="white"
+                            dark
                         ></v-select>
                     </v-col>
                     <v-col cols="12" sm="8">
@@ -124,6 +129,7 @@
                             next-icon="mdi-menu-right"
                             prev-icon="mdi-menu-left"
                             @input="handlePageChange"
+                            color="blue-grey"
                         ></v-pagination>
                     </v-col>
                 </v-row>

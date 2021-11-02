@@ -1,11 +1,12 @@
 <template>
     <div>
-        <v-card>
+        <v-card rounded="0">
             <v-data-table
                 :headers="headers"
                 :items="livros"
+                :items-per-page="pageSize"
                 :loading="loading"
-                sort-by="calories"
+                :search="search"
                 class="elevation-1"
                 hide-default-footer
             >
@@ -13,10 +14,19 @@
                     <v-toolbar flat class="blue-grey darken-3">
                         <v-toolbar-title class="white--text">Livros</v-toolbar-title>
                         <v-divider class="mx-4 white" inset vertical></v-divider>
+                        <v-text-field
+                            v-model="search"
+                            append-icon="mdi-magnify"
+                            label="Procurar..."
+                            single-line
+                            hide-details
+                            class="white--text"
+                            dark
+                        ></v-text-field>
                         <v-spacer></v-spacer>
                         <v-dialog v-model="dialog" max-width="500px">
                             <template v-slot:activator="{ on, attrs }">
-                                <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+                                <v-btn color="blue-grey" dark class="mb-2" v-bind="attrs" v-on="on">
                                     Novo Livro
                                 </v-btn>
                             </template>
@@ -36,6 +46,7 @@
                                                         outlined
                                                         hint="Digite o nome do livro"
                                                         counter="40"
+                                                        color="blue-grey"
                                                     ></v-text-field>
                                                 </v-col>
                                             </v-row>
@@ -48,6 +59,7 @@
                                                         outlined
                                                         hint="Digite o autor do livro"
                                                         counter="40"
+                                                        color="blue-grey"
                                                     ></v-text-field>
                                                 </v-col>
                                             </v-row>
@@ -61,6 +73,8 @@
                                                         :rules="[rules.required]"
                                                         label="Escolha uma editora"
                                                         outlined
+                                                        color="blue-grey"
+                                                        item-color="blue-grey"
                                                     >
                                                         <template slot="selection" slot-scope="editoras">
                                                             <strong>ID:</strong> {{ editoras.item.id }} -
@@ -91,6 +105,7 @@
                                                                 outlined
                                                                 :rules="[rules.required]"
                                                                 hint="Selecione a data de lançamento"
+                                                                color="blue-grey"
                                                                 v-bind="attrs"
                                                                 @blur="date = parseDate(dateFormatted)"
                                                                 v-on="on"
@@ -102,6 +117,7 @@
                                                             no-title
                                                             scrollable
                                                             :max="todayDate"
+                                                            color="blue-grey"
                                                         ></v-date-picker>
                                                     </v-menu>
                                                 </v-col>
@@ -114,6 +130,7 @@
                                                         outlined
                                                         hint="Digite a quantidade do(e) livro(s)"
                                                         :rules="[rules.required, rules.requiredNumber]"
+                                                        color="blue-grey"
                                                     ></v-text-field>
                                                 </v-col>
                                             </v-row>
@@ -122,10 +139,10 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" text @click="close">
+                                    <v-btn color="red darken-1" text @click="close">
                                         Cancelar
                                     </v-btn>
-                                    <v-btn color="blue darken-1" text @click="save">
+                                    <v-btn color="green darken-1" text @click="save">
                                         Salvar
                                     </v-btn>
                                 </v-card-actions>
@@ -136,8 +153,8 @@
                                 <v-card-title class="text-h5">Você realmente deseja excluir esse item?</v-card-title>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
-                                    <v-btn color="blue darken-1" text @click="deleteItemConfirm">Confirmar</v-btn>
+                                    <v-btn color="red darken-1" text @click="closeDelete">Cancelar</v-btn>
+                                    <v-btn color="green darken-1" text @click="deleteItemConfirm">Confirmar</v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
                             </v-card>
@@ -145,10 +162,10 @@
                     </v-toolbar>
                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
-                    <v-icon small class="mr-2" @click="editItem(item)">
+                    <v-icon size="20" class="mr-2" @click="editItem(item)">
                         mdi-pencil
                     </v-icon>
-                    <v-icon small @click="deleteItem(item)">
+                    <v-icon size="20" @click="deleteItem(item)">
                         mdi-delete
                     </v-icon>
                 </template>
@@ -159,8 +176,8 @@
                 </template>
             </v-data-table>
         </v-card>
-        <v-divider class="white"></v-divider>
-        <v-card>
+        <v-divider></v-divider>
+        <v-card color="blue-grey darken-3" rounded="0">
             <v-col cols="12">
                 <v-row>
                     <v-col cols="4" sm="4">
@@ -169,6 +186,9 @@
                             :items="pageSizes"
                             label="Items por Página"
                             @change="handlePageSizeChange"
+                            item-color="blue-grey"
+                            color="white"
+                            dark
                             outlined
                         ></v-select>
                     </v-col>
@@ -179,6 +199,7 @@
                             total-visible="7"
                             next-icon="mdi-menu-right"
                             prev-icon="mdi-menu-left"
+                            color="blue-grey"
                             @input="handlePageChange"
                         ></v-pagination>
                     </v-col>
@@ -200,6 +221,7 @@ export default {
         dialogDelete: false,
         loading: true,
         menu: false,
+        search: '',
         livros: [],
         editoras: [],
         totallivros: 0,
@@ -235,7 +257,7 @@ export default {
             { text: 'Editora', value: 'editora.nome' },
             { text: 'Lacamento', value: 'lancamento' },
             { text: 'Quantidade', value: 'quantidade' },
-            { text: 'Actions', value: 'actions', sortable: false },
+            { text: 'Ações', value: 'actions', sortable: false },
         ],
         rules: {
             required: value => !!value || 'Campo obrigatório',

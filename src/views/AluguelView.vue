@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card>
+        <v-card rounded="0">
             <v-data-table
                 :headers="headers"
                 :items="alugueis"
@@ -17,16 +17,17 @@
                         <v-text-field
                             v-model="search"
                             append-icon="mdi-magnify"
-                            label="Search"
+                            label="Procurar..."
                             single-line
                             hide-details
                             class="white--text"
                             color="white"
+                            dark
                         ></v-text-field>
                         <v-spacer></v-spacer>
                         <v-dialog v-model="dialog" max-width="500px">
                             <template v-slot:activator="{ on, attrs }">
-                                <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+                                <v-btn color="blue-grey" dark class="mb-2" v-bind="attrs" v-on="on">
                                     Novo Aluguel
                                 </v-btn>
                             </template>
@@ -45,6 +46,9 @@
                                                         item-text="nome"
                                                         item-value="id"
                                                         label="Escolha um livro"
+                                                        color="blue-grey"
+                                                        item-color="blue-grey"
+                                                        no-data-text="Sem livros no estoque"
                                                         :rules="[rules.required]"
                                                         outlined
                                                     >
@@ -66,6 +70,8 @@
                                                         item-text="nome"
                                                         item-value="id"
                                                         label="Escolha um usuario"
+                                                        color="blue-grey"
+                                                        item-color="blue-grey"
                                                         :rules="[rules.required]"
                                                         outlined
                                                     >
@@ -98,6 +104,7 @@
                                                                 outlined
                                                                 :rules="[rules.required]"
                                                                 hint="Selecione a data de aluguel"
+                                                                color="blue-grey"
                                                                 v-bind="attrs"
                                                                 @blur="dateAluguel = parseDate(dateFormatted)"
                                                                 v-on="on"
@@ -108,6 +115,7 @@
                                                             @input="menuAluguel = false"
                                                             no-title
                                                             scrollable
+                                                            color="blue-grey"
                                                         ></v-date-picker>
                                                     </v-menu>
                                                 </v-col>
@@ -131,6 +139,7 @@
                                                                 outlined
                                                                 :rules="[rules.required]"
                                                                 hint="Selecione a data de previsão"
+                                                                color="blue-grey"
                                                                 v-bind="attrs"
                                                                 @blur="datePrevisao = parseDate(dateFormatted)"
                                                                 v-on="on"
@@ -142,6 +151,7 @@
                                                             no-title
                                                             scrollable
                                                             :min="dateAluguel"
+                                                            color="blue-grey"
                                                         ></v-date-picker>
                                                     </v-menu>
                                                 </v-col>
@@ -167,6 +177,7 @@
                                                                 v-bind="attrs"
                                                                 @blur="dateDevolucao = parseDate(dateFormatted)"
                                                                 v-on="on"
+                                                                color="blue-grey"
                                                             ></v-text-field>
                                                         </template>
                                                         <v-date-picker
@@ -175,6 +186,7 @@
                                                             no-title
                                                             :min="dateAluguel"
                                                             scrollable
+                                                            color="blue-grey"
                                                         ></v-date-picker>
                                                     </v-menu>
                                                 </v-col>
@@ -184,10 +196,10 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" text @click="close">
+                                    <v-btn color="red darken-1" text @click="close">
                                         Cancelar
                                     </v-btn>
-                                    <v-btn color="blue darken-1" text @click="save">
+                                    <v-btn color="green darken-1" text @click="save">
                                         Salvar
                                     </v-btn>
                                 </v-card-actions>
@@ -210,8 +222,8 @@
                 </template>
             </v-data-table>
         </v-card>
-        <v-divider class="white"></v-divider>
-        <v-card>
+        <v-divider></v-divider>
+        <v-card rounded="0" color="blue-grey darken-3">
             <v-col cols="12">
                 <v-row>
                     <v-col cols="4" sm="4">
@@ -221,6 +233,9 @@
                             label="Items por Pagina"
                             @change="handlePageSizeChange"
                             outlined
+                            item-color="blue-grey"
+                            color="white"
+                            dark
                         ></v-select>
                     </v-col>
                     <v-col cols="12" sm="8">
@@ -230,6 +245,7 @@
                             total-visible="7"
                             next-icon="mdi-menu-right"
                             prev-icon="mdi-menu-left"
+                            color="blue-grey"
                             @input="handlePageChange"
                         ></v-pagination>
                     </v-col>
@@ -289,7 +305,7 @@ export default {
             { text: 'Aluguel', value: 'dataAluguel' },
             { text: 'Previsão', value: 'dataPrevisao' },
             { text: 'Devolução', value: 'dataDevolucao' },
-            { text: 'Actions', value: 'actions', sortable: false },
+            { text: 'Ações', value: 'actions', sortable: false },
         ],
         rules: {
             required: value => !!value || 'Campo obrigatório',
