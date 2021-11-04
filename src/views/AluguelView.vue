@@ -53,8 +53,7 @@
                                                         outlined
                                                     >
                                                         <template slot="selection" slot-scope="livros">
-                                                            <strong>ID:</strong> {{ livros.item.id }} -
-                                                            <strong> Nome:</strong> {{ livros.item.nome }}
+                                                            {{ livros.item.id }} - {{ livros.item.nome }}
                                                         </template>
                                                         <template slot="item" slot-scope="livros">
                                                             {{ livros.item.id }} - {{ livros.item.nome }}
@@ -76,8 +75,7 @@
                                                         outlined
                                                     >
                                                         <template slot="selection" slot-scope="usuarios">
-                                                            <strong>ID:</strong> {{ usuarios.item.id }} -
-                                                            <strong> Nome:</strong> {{ usuarios.item.nome }}
+                                                            {{ usuarios.item.id }} - {{ usuarios.item.nome }}
                                                         </template>
                                                         <template slot="item" slot-scope="usuarios">
                                                             {{ usuarios.item.id }} - {{ usuarios.item.nome }}
@@ -207,6 +205,11 @@
                         </v-dialog>
                     </v-toolbar>
                 </template>
+                <template v-slot:[`item.status`]="{ item }">
+                    <v-chip :color="getColor(item.status)" dark>
+                        {{ item.status }}
+                    </v-chip>
+                </template>
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-icon size="20" class="mr-2" @click="editItem(item)">
                         mdi-pencil
@@ -305,10 +308,12 @@ export default {
             { text: 'Aluguel', value: 'dataAluguel' },
             { text: 'Previsão', value: 'dataPrevisao' },
             { text: 'Devolução', value: 'dataDevolucao' },
+            { text: 'Status', value: 'status' },
             { text: 'Ações', value: 'actions', sortable: false },
         ],
         rules: {
             required: value => !!value || 'Campo obrigatório',
+            quantityLivro: value => value.quantidade != 0 || 'Livro faltando',
         },
     }),
 
@@ -352,7 +357,12 @@ export default {
             this.loading = true;
             aluguelService.findAll(params).then(res => {
                 const { totalElements, totalPages, content } = res.data;
-                this.alugueis = content;
+                this.alugueis = content.map(aluguel => {
+                    Object.defineProperty(aluguel, 'status', {
+                        value: this.getStatus(aluguel),
+                    });
+                    return aluguel;
+                });
                 this.totalAlugueis = totalElements;
                 this.totalPages = totalPages;
                 this.loading = false;
@@ -448,7 +458,7 @@ export default {
         findAllLivros() {
             livroService.findAll().then(res => {
                 this.livros = res.data.content.filter(livro => {
-                    return livro.quantidade > 0;
+                    return livro.quantidade >= 1;
                 });
             });
         },
@@ -471,6 +481,26 @@ export default {
 
             const [year, month, day] = date.split('-');
             return `${year}-${month}-${day}`;
+        },
+
+        getStatus(aluguel) {
+            if (aluguel.dataPrevisao < aluguel.dataDevolucao) {
+                return 'Atrasado';
+            }
+
+            if (aluguel.dataPrevisao >= aluguel.dataDevolucao) {
+                return 'No prazo';
+            }
+
+            if (aluguel.dataPrevisao) {
+                return 'Pendente';
+            }
+        },
+
+        getColor(status) {
+            if (status == 'No prazo') return 'green';
+            else if (status == 'Pendente') return 'orange';
+            else return 'red';
         },
 
         parseDate(date) {

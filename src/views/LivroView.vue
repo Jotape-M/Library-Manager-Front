@@ -77,8 +77,7 @@
                                                         item-color="blue-grey"
                                                     >
                                                         <template slot="selection" slot-scope="editoras">
-                                                            <strong>ID:</strong> {{ editoras.item.id }} -
-                                                            <strong> Nome:</strong> {{ editoras.item.nome }}
+                                                            {{ editoras.item.id }} - {{ editoras.item.nome }}
                                                         </template>
                                                         <template slot="item" slot-scope="editoras">
                                                             {{ editoras.item.id }} - {{ editoras.item.nome }}

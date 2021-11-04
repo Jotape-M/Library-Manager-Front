@@ -1,7 +1,8 @@
 <template>
     <v-card>
+        <v-card-title>Status dos alugueis</v-card-title>
         <div id="chart">
-            <apexchart type="pie" width="380" :options="chartOptions" :series="series"></apexchart>
+            <apexchart v-show="show" type="pie" width="400" :options="chartOptions" :series="series"></apexchart>
         </div>
     </v-card>
 </template>
@@ -23,7 +24,7 @@ export default {
                     breakpoint: 480,
                     options: {
                         chart: {
-                            width: 200,
+                            width: 300,
                         },
                         legend: {
                             position: 'bottom',
@@ -33,21 +34,21 @@ export default {
             ],
         },
         alugueis: [],
+        show: false,
     }),
 
-    created() {
+    mounted() {
         this.initialize();
     },
 
     methods: {
         initialize() {
             aluguelService.findAll().then(res => {
-                console.log(res.data);
                 const { totalElements, content } = res.data;
-                console.log(content);
                 this.alugueis = content;
                 this.totalAlugueis = totalElements;
                 this.setSeries(content);
+                this.show = !this.show;
             });
         },
 
