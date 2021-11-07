@@ -8,10 +8,10 @@
                 :search="search"
                 hide-default-footer
                 :loading="loading"
-                class="elevation-1"
+                class="elevation-1 rounded-t"
             >
                 <template v-slot:top>
-                    <v-toolbar flat class="blue-grey darken-3">
+                    <v-toolbar flat class="blue-grey darken-3 rounded-t">
                         <v-toolbar-title class="white--text">Alugueis</v-toolbar-title>
                         <v-divider class="mx-4 white" inset vertical></v-divider>
                         <v-text-field
@@ -226,7 +226,7 @@
             </v-data-table>
         </v-card>
         <v-divider></v-divider>
-        <v-card rounded="0" color="blue-grey darken-3">
+        <v-card rounded="0" color="blue-grey darken-3 rounded-b">
             <v-col cols="12">
                 <v-row>
                     <v-col cols="4" sm="4">
@@ -403,6 +403,9 @@ export default {
             this.aluguel.dataAluguel = item.dataAluguel;
             this.aluguel.dataPrevisao = item.dataPrevisao;
             this.aluguel.dataDevolucao = item.dataDevolucao;
+            if (this.aluguel.dataPrevisao < this.aluguel.dataDevolucao) {
+                this.$swal('Livro não pode ser deletado', 'Esse livro está vinculado a um aluguel', 'error');
+            }
             this.dialog = true;
         },
 
@@ -456,16 +459,16 @@ export default {
         },
 
         findAllLivros() {
-            livroService.findAll().then(res => {
-                this.livros = res.data.content.filter(livro => {
+            livroService.findAllNotPaged().then(res => {
+                this.livros = res.data.filter(livro => {
                     return livro.quantidade >= 1;
                 });
             });
         },
 
         findAllUsuarios() {
-            usuarioService.findAll().then(res => {
-                this.usuarios = res.data.content;
+            usuarioService.findAllNotPaged().then(res => {
+                this.usuarios = res.data;
             });
         },
 
@@ -480,7 +483,7 @@ export default {
             if (!date) return null;
 
             const [year, month, day] = date.split('-');
-            return `${year}-${month}-${day}`;
+            return [year, month, day];
         },
 
         getStatus(aluguel) {
@@ -495,6 +498,7 @@ export default {
             if (aluguel.dataPrevisao) {
                 return 'Pendente';
             }
+            console.log(dataPrevisao);
         },
 
         getColor(status) {

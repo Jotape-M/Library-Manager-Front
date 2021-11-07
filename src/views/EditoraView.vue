@@ -8,10 +8,10 @@
                 :search="search"
                 hide-default-footer
                 :loading="loading"
-                class="elevation-1"
+                class="elevation-1 rounded-t"
             >
                 <template v-slot:top>
-                    <v-toolbar flat class="blue-grey darken-3" rounded="1">
+                    <v-toolbar flat class="blue-grey darken-3 rounded-t">
                         <v-toolbar-title class="white--text">Editoras</v-toolbar-title>
                         <v-divider class="mx-4 white" inset vertical></v-divider>
                         <v-text-field
@@ -106,7 +106,7 @@
             </v-data-table>
         </v-card>
         <v-divider></v-divider>
-        <v-card color="blue-grey darken-3" rounded="0">
+        <v-card color="blue-grey darken-3 rounded-b" rounded="0">
             <v-col cols="12">
                 <v-row>
                     <v-col cols="4" sm="4">

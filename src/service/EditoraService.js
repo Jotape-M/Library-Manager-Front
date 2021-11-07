@@ -4,6 +4,9 @@ export default {
     findAll: params => {
         return http.get('/editoras', { params });
     },
+    findAllNotPaged: () => {
+        return http.get('/editoras/all');
+    },
     save: editora => {
         return http.post('/editoras', editora);
     },

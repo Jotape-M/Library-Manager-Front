@@ -4,6 +4,9 @@ export default {
     findAll: params => {
         return http.get('/livros', { params });
     },
+    findAllNotPaged: () => {
+        return http.get('/livros/all');
+    },
     save: livro => {
         return http.post('/livros', livro);
     },
