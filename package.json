@@ -1,29 +1,33 @@
 {
-  "name": "library-manager-front",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
-  },
-  "dependencies": {
-    "apexcharts": "^3.29.0",
-    "axios": "^0.23.0",
-    "moment": "^2.29.1",
-    "vue": "^2.6.11",
-    "vue-apexcharts": "^1.6.2",
-    "vue-moment": "^4.1.0",
-    "vue-router": "^3.2.0",
-    "vue-sweetalert2": "^5.0.2",
-    "vuetify": "^2.4.0"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "sass": "~1.32.0",
-    "sass-loader": "^10.0.0",
-    "vue-cli-plugin-vuetify": "~2.4.3",
-    "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.7.0"
-  }
+    "name": "library-manager-front",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build",
+        "postinstall": "npm run build",
+        "start": "node server.js",
+        "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm run dev"
+    },
+    "dependencies": {
+        "apexcharts": "^3.29.0",
+        "axios": "^0.23.0",
+        "express": "^4.17.1",
+        "moment": "^2.29.1",
+        "vue": "^2.6.11",
+        "vue-apexcharts": "^1.6.2",
+        "vue-moment": "^4.1.0",
+        "vue-router": "^3.2.0",
+        "vue-sweetalert2": "^5.0.2",
+        "vuetify": "^2.4.0"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-router": "~4.5.0",
+        "@vue/cli-service": "~4.5.0",
+        "sass": "~1.32.0",
+        "sass-loader": "^10.0.0",
+        "vue-cli-plugin-vuetify": "~2.4.3",
+        "vue-template-compiler": "^2.6.11",
+        "vuetify-loader": "^1.7.0"
+    }
 }
