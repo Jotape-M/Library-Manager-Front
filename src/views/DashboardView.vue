@@ -10,8 +10,8 @@
                 </v-card>
             </v-col>
             <v-col>
-                <v-card class="rounded" min-height="360" elevation="6">
-                    <v-card-title class="blue-grey darken-3 white--text">Últimos Registros</v-card-title>
+                <v-card class="rounded" min-height="360" min-width="450" elevation="6">
+                    <v-card-title class="blue-grey darken-3 white--text">Últimos Registros ou Modificações</v-card-title>
                     <div>
                         <v-list>
                             <v-list-group color="blue-grey" prepend-icon="mdi-office-building">
@@ -77,7 +77,7 @@
 
                                             <v-list-group v-if="typeof val === 'object'" color="blue-grey" sub-group>
                                                 <v-list-item link v-for="(v, n, i) in val" :key="i">
-                                                    <v-list-item-content v-if="typeof val === 'object'">
+                                                    <v-list-item-content v-if="typeof val === 'object' || v !== null">
                                                         <b>{{ n.charAt(0).toUpperCase() + n.slice(1) }}</b> {{ v }}
                                                     </v-list-item-content>
                                                     <v-list-item-content v-else>
@@ -97,26 +97,22 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title class="blue-grey darken-3 white--text">Editora</v-card-title>
-                    <div></div>
+                    <v-card-title class="blue-grey darken-3 white--text">Total Editoras: {{ arraysLength[0] }} </v-card-title>
                 </v-card>
             </v-col>
             <v-col>
                 <v-card>
-                    <v-card-title class="blue-grey darken-3 white--text">Livro</v-card-title>
-                    <div></div>
+                    <v-card-title class="blue-grey darken-3 white--text">Total Livros: {{ arraysLength[2] }} </v-card-title>
                 </v-card>
             </v-col>
             <v-col>
                 <v-card>
-                    <v-card-title class="blue-grey darken-3 white--text">Usuário</v-card-title>
-                    <div></div>
+                    <v-card-title class="blue-grey darken-3 white--text">Total Usuários: {{ arraysLength[1] }} </v-card-title>
                 </v-card>
             </v-col>
             <v-col>
                 <v-card>
-                    <v-card-title class="blue-grey darken-3 white--text">Aluguel</v-card-title>
-                    <div></div>
+                    <v-card-title class="blue-grey darken-3 white--text">Total Alugueis: {{ arraysLength[3] }}</v-card-title>
                 </v-card>
             </v-col>
         </v-row>
@@ -184,6 +180,7 @@ export default {
         lastLivro: {},
         lastUsuario: {},
         lastShow: true,
+        arraysLength: [],
     }),
 
     created() {
@@ -218,24 +215,28 @@ export default {
         setLastEditora() {
             editoraService.findAllNotPaged().then(res => {
                 this.lastEditora = res.data[res.data.length - 1];
+                this.arraysLength[0] = res.data.length;
             });
         },
 
         setLastUsuario() {
             usuarioService.findAllNotPaged().then(res => {
                 this.lastUsuario = res.data[res.data.length - 1];
+                this.arraysLength[1] = res.data.length;
             });
         },
 
         setLastLivro() {
             livroService.findAllNotPaged().then(res => {
                 this.lastLivro = res.data[res.data.length - 1];
+                this.arraysLength[2] = res.data.length;
             });
         },
 
         setLastAluguel() {
             aluguelService.findAllNotPaged().then(res => {
                 this.lastAluguel = res.data[res.data.length - 1];
+                this.arraysLength[3] = res.data.length;
             });
         },
     },

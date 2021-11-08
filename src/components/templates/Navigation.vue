@@ -1,6 +1,6 @@
 <template>
     <v-card rounded="0">
-        <v-navigation-drawer app v-model="drawer" dark color="blue-grey">
+        <v-navigation-drawer app v-model="drawer" dark color="blue-grey lighten-1">
             <v-list-item>
                 <v-list-item-content>
                     <v-list-item-title class="text-h6">
@@ -23,7 +23,7 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-app-bar app color="blue-grey darken-3" rounded="0" dark>
+        <v-app-bar app color="blue-grey darken-4" rounded="0" dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
             <v-toolbar-title>WDA Library</v-toolbar-title>

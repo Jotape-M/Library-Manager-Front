@@ -262,6 +262,7 @@
 import aluguelService from '../service/AluguelService';
 import usuarioService from '../service/UsuarioService';
 import livroService from '../service/LivroService';
+import moment from 'moment';
 
 export default {
     name: 'App',
@@ -346,8 +347,6 @@ export default {
     },
 
     created() {
-        this.findAllLivros();
-        this.findAllUsuarios();
         this.initialize();
     },
 
@@ -367,6 +366,8 @@ export default {
                 this.totalPages = totalPages;
                 this.loading = false;
             });
+            this.findAllUsuarios();
+            this.findAllLivros();
         },
 
         getRequestParams(page, pageSize) {
@@ -403,9 +404,6 @@ export default {
             this.aluguel.dataAluguel = item.dataAluguel;
             this.aluguel.dataPrevisao = item.dataPrevisao;
             this.aluguel.dataDevolucao = item.dataDevolucao;
-            if (this.aluguel.dataPrevisao < this.aluguel.dataDevolucao) {
-                this.$swal('Livro não pode ser deletado', 'Esse livro está vinculado a um aluguel', 'error');
-            }
             this.dialog = true;
         },
 
@@ -417,7 +415,7 @@ export default {
             this.aluguel.livro = item.livro;
             this.aluguel.dataAluguel = item.dataAluguel;
             this.aluguel.dataPrevisao = item.dataPrevisao;
-            this.aluguel.dataDevolucao = this.formatDate(new Date().toISOString().slice(0, 10));
+            this.aluguel.dataDevolucao = moment(new Date().toISOString().slice(0, 10)).format('DD-MM-YYYY');
             aluguelService.update(this.aluguel).then(() => {
                 this.aluguel = {};
                 this.initialize();
@@ -440,18 +438,36 @@ export default {
 
         save() {
             if (this.$refs.form.validate()) {
-                if (this.aluguel.id) {
-                    aluguelService.update(this.aluguel).then(() => {
-                        Toast.fire('Aluguel alterado com sucesso', '', 'success');
-                        this.aluguel = {};
-                        this.initialize();
-                    });
+                if (
+                    moment(this.aluguel.dataPrevisao, 'DD-MM-YYYY').isBefore(moment(this.aluguel.dataAluguel, 'DD-MM-YYYY')) ||
+                    moment(this.aluguel.dataDevolucao, 'DD-MM-YYYY').isBefore(moment(this.aluguel.dataAluguel, 'DD-MM-YYYY'))
+                ) {
+                    this.close();
+                    Toast.fire('Data de aluguel não pode ser maior que às demais', '', 'error');
+                } else if (this.aluguel.id) {
+                    aluguelService
+                        .update(this.aluguel)
+                        .then(() => {
+                            Toast.fire('Aluguel alterado com sucesso', '', 'success');
+                            this.aluguel = {};
+                            this.initialize();
+                        })
+                        .catch(() => {
+                            this.close();
+                            Toast.fire('Livro selecionado, com 0 quantidade no estoque', '', 'error');
+                        });
                 } else {
-                    aluguelService.save(this.aluguel).then(() => {
-                        Toast.fire('Aluguel cadastrado com sucesso', '', 'success');
-                        this.aluguel = {};
-                        this.initialize();
-                    });
+                    aluguelService
+                        .save(this.aluguel)
+                        .then(() => {
+                            Toast.fire('Aluguel cadastrado com sucesso', '', 'success');
+                            this.aluguel = {};
+                            this.initialize();
+                        })
+                        .catch(() => {
+                            this.close();
+                            Toast.fire('Livro selecionado, com 0 quantidade no estoque', '', 'error');
+                        });
                 }
                 this.aluguel = {};
                 this.close();
@@ -460,9 +476,7 @@ export default {
 
         findAllLivros() {
             livroService.findAllNotPaged().then(res => {
-                this.livros = res.data.filter(livro => {
-                    return livro.quantidade >= 1;
-                });
+                this.livros = res.data;
             });
         },
 
@@ -479,19 +493,12 @@ export default {
             return `${day}-${month}-${year}`;
         },
 
-        formatDate2(date) {
-            if (!date) return null;
-
-            const [year, month, day] = date.split('-');
-            return [year, month, day];
-        },
-
         getStatus(aluguel) {
-            if (aluguel.dataPrevisao < aluguel.dataDevolucao) {
+            if (moment(aluguel.dataPrevisao, 'DD-MM-YYYY').isBefore(moment(aluguel.dataDevolucao, 'DD-MM-YYYY'))) {
                 return 'Atrasado';
             }
 
-            if (aluguel.dataPrevisao >= aluguel.dataDevolucao) {
+            if (moment(aluguel.dataPrevisao, 'DD-MM-YYYY').isSameOrAfter(moment(aluguel.dataDevolucao, 'DD-MM-YYYY'))) {
                 return 'No prazo';
             }
 

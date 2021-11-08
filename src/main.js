@@ -5,7 +5,6 @@ import vuetify from './plugins/vuetify';
 import VueSweetalert2 from 'vue-sweetalert2';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import VueApexCharts from 'vue-apexcharts';
-
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 Vue.use(VueApexCharts);
