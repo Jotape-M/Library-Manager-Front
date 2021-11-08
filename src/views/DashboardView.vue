@@ -1,6 +1,7 @@
 <template>
     <v-container>
         <v-row>
+            <!-- Graphics -->
             <v-col>
                 <v-card class="rounded" elevation="6">
                     <v-card-title class="blue-grey darken-3 white--text">Status dos Alugueis</v-card-title>
@@ -9,79 +10,91 @@
                     </div>
                 </v-card>
             </v-col>
+            <!-- Latest records and modifications -->
             <v-col>
-                <v-card class="rounded" min-height="360" min-width="450" elevation="6">
+                <v-card class="rounded" min-height="360" elevation="6">
                     <v-card-title class="blue-grey darken-3 white--text">Últimos Registros ou Modificações</v-card-title>
                     <div>
                         <v-list>
+                            <!-- Editora -->
                             <v-list-group color="blue-grey" prepend-icon="mdi-office-building">
                                 <template v-slot:activator>
                                     <v-list-item-title>Editora</v-list-item-title>
                                 </template>
                                 <v-list-item link v-for="(value, name, i) in lastEditora" :key="i">
                                     <v-list-item-content>
-                                        <b>{{ name.charAt(0).toUpperCase() + name.slice(1) }}</b> {{ value }}
+                                        <b>{{ formatName(name) }}</b> {{ value }}
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list-group>
+                            <!-- Usuário -->
                             <v-list-group color="blue-grey" prepend-icon="mdi-account-multiple">
                                 <template v-slot:activator>
                                     <v-list-item-title>Usuário</v-list-item-title>
                                 </template>
                                 <v-list-item link v-for="(value, name, i) in lastUsuario" :key="i">
                                     <v-list-item-content>
-                                        <b>{{ name.charAt(0).toUpperCase() + name.slice(1) }}</b> {{ value }}
+                                        <b>{{ formatName(name) }}</b> {{ value }}
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list-group>
+                            <!-- Livro -->
                             <v-list-group color="blue-grey" prepend-icon="mdi-book-multiple">
                                 <template v-slot:activator>
                                     <v-list-item-title>Livro</v-list-item-title>
                                 </template>
-                                <v-list-item link v-for="(value, name, i) in lastLivro" :key="i">
-                                    <v-list-item-content v-if="!(typeof value === 'object')">
-                                        <b>{{ name.charAt(0).toUpperCase() + name.slice(1) }}</b> {{ value }}
+                                <v-list-item link v-for="(valueLastLivro, nameLastLivro, i) in lastLivro" :key="i">
+                                    <v-list-item-content v-if="!(typeof valueLastLivro === 'object')">
+                                        <b>{{ formatName(nameLastLivro) }}</b> {{ valueLastLivro }}
                                     </v-list-item-content>
                                     <v-list-item-content v-else>
-                                        <b>{{ name.charAt(0).toUpperCase() + name.slice(1) }}</b>
+                                        <b>{{ formatName(nameLastLivro) }}</b>
                                     </v-list-item-content>
-                                    <v-list-group v-if="typeof value === 'object'" color="blue-grey" sub-group>
-                                        <v-list-item link v-for="(val, nome, i) in value" :key="i">
+                                    <!-- Editora in Livro -->
+                                    <v-list-group v-if="typeof valueLastLivro === 'object'" color="blue-grey" sub-group>
+                                        <v-list-item link v-for="(valueEditora, nameEditora, i) in valueLastLivro" :key="i">
                                             <v-list-item-content>
-                                                <b>{{ nome.charAt(0).toUpperCase() + nome.slice(1) }}</b> {{ val }}
+                                                <b>{{ formatName(nameEditora) }}</b> {{ valueEditora }}
                                             </v-list-item-content>
                                         </v-list-item>
                                     </v-list-group>
                                 </v-list-item>
                             </v-list-group>
+                            <!-- Aluguel -->
                             <v-list-group color="blue-grey" prepend-icon="mdi-calendar-multiple">
                                 <template v-slot:activator>
                                     <v-list-item-title>Aluguel</v-list-item-title>
                                 </template>
-                                <v-list-item link v-for="(value, name, i) in lastAluguel" :key="i">
-                                    <v-list-item-content v-if="!(typeof value === 'object')">
-                                        <b>{{ name.charAt(0).toUpperCase() + name.slice(1) }}</b> {{ value }}
+                                <v-list-item link v-for="(valueLastAluguel, nameLastAluguel, i) in lastAluguel" :key="i">
+                                    <v-list-item-content v-if="!(typeof valueLastAluguel === 'object')">
+                                        <b>{{ formatName(nameLastAluguel) }}</b
+                                        >{{ valueLastAluguel }}
                                     </v-list-item-content>
                                     <v-list-item-content v-else>
-                                        <b>{{ name.charAt(0).toUpperCase() + name.slice(1) }}</b>
+                                        <b>{{ formatName(nameLastAluguel) }}</b>
                                     </v-list-item-content>
-
-                                    <v-list-group v-if="typeof value === 'object'" color="blue-grey" sub-group>
-                                        <v-list-item link v-for="(val, nome, i) in value" :key="i">
-                                            <v-list-item-content v-if="!(typeof val === 'object')">
-                                                <b>{{ nome.charAt(0).toUpperCase() + nome.slice(1) }}</b> {{ val }}
+                                    <!-- Livro or Usuario in Aluguel -->
+                                    <v-list-group
+                                        v-if="typeof valueLastAluguel === 'object' && valueLastAluguel !== null"
+                                        color="blue-grey"
+                                        sub-group
+                                    >
+                                        <v-list-item link v-for="(valueEntity, nameEntity, i) in valueLastAluguel" :key="i">
+                                            <v-list-item-content v-if="!(typeof valueEntity === 'object')">
+                                                <b>{{ formatName(nameEntity) }}</b> {{ valueEntity }}
                                             </v-list-item-content>
                                             <v-list-item-content v-else>
-                                                <b>{{ nome.charAt(0).toUpperCase() + nome.slice(1) }}</b>
+                                                <b>{{ formatName(nameEntity) }}</b>
                                             </v-list-item-content>
-
-                                            <v-list-group v-if="typeof val === 'object'" color="blue-grey" sub-group>
-                                                <v-list-item link v-for="(v, n, i) in val" :key="i">
-                                                    <v-list-item-content v-if="typeof val === 'object' || v !== null">
-                                                        <b>{{ n.charAt(0).toUpperCase() + n.slice(1) }}</b> {{ v }}
+                                            <!-- Editora in Livro in Aluguel -->
+                                            <v-list-group v-if="typeof valueEntity === 'object'" color="blue-grey" sub-group>
+                                                <v-list-item link v-for="(valueEditora, nameEditora, i) in valueEntity" :key="i">
+                                                    <v-list-item-content v-if="typeof valueEntity === 'object'">
+                                                        <b>{{ formatName(nameEditora) }}</b>
+                                                        {{ valueEditora }}
                                                     </v-list-item-content>
                                                     <v-list-item-content v-else>
-                                                        <b>{{ n.charAt(0).toUpperCase() + n.slice(1) }}</b>
+                                                        <b>{{ formatName(nameEditora) }}</b>
                                                     </v-list-item-content>
                                                 </v-list-item>
                                             </v-list-group>
@@ -94,24 +107,25 @@
                 </v-card>
             </v-col>
         </v-row>
+        <!-- Total entities -->
         <v-row>
             <v-col>
-                <v-card>
+                <v-card min-width="200">
                     <v-card-title class="blue-grey darken-3 white--text">Total Editoras: {{ arraysLength[0] }} </v-card-title>
                 </v-card>
             </v-col>
             <v-col>
-                <v-card>
+                <v-card min-width="200">
                     <v-card-title class="blue-grey darken-3 white--text">Total Livros: {{ arraysLength[2] }} </v-card-title>
                 </v-card>
             </v-col>
             <v-col>
-                <v-card>
+                <v-card min-width="200">
                     <v-card-title class="blue-grey darken-3 white--text">Total Usuários: {{ arraysLength[1] }} </v-card-title>
                 </v-card>
             </v-col>
             <v-col>
-                <v-card>
+                <v-card min-width="200">
                     <v-card-title class="blue-grey darken-3 white--text">Total Alugueis: {{ arraysLength[3] }}</v-card-title>
                 </v-card>
             </v-col>
@@ -124,6 +138,7 @@ import aluguelService from '../service/AluguelService';
 import editoraService from '../service/EditoraService';
 import usuarioService from '../service/UsuarioService';
 import livroService from '../service/LivroService';
+import moment from 'moment';
 
 export default {
     data: () => ({
@@ -202,9 +217,9 @@ export default {
 
         setSeries(alugueis) {
             alugueis.forEach(aluguel => {
-                if (aluguel.dataDevolucao <= aluguel.dataPrevisao) {
+                if (moment(aluguel.dataDevolucao, 'DD-MM-YYYY').isSameOrBefore(moment(aluguel.dataPrevisao, 'DD-MM-YYYY'))) {
                     this.series[0].data[2]++;
-                } else if (aluguel.dataDevolucao > aluguel.dataPrevisao) {
+                } else if (moment(aluguel.dataDevolucao, 'DD-MM-YYYY').isAfter(moment(aluguel.dataPrevisao, 'DD-MM-YYYY'))) {
                     this.series[0].data[1]++;
                 } else {
                     this.series[0].data[0]++;
@@ -238,6 +253,10 @@ export default {
                 this.lastAluguel = res.data[res.data.length - 1];
                 this.arraysLength[3] = res.data.length;
             });
+        },
+
+        formatName(name) {
+            return name.charAt(0).toUpperCase() + name.slice(1);
         },
     },
 };
