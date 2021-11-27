@@ -146,7 +146,7 @@ export default {
         arraysLength: [],
     }),
 
-    created() {
+    mounted() {
         this.initialize();
     },
 
