@@ -6,103 +6,23 @@
                 <v-card class="rounded" elevation="6">
                     <v-card-title class="blue-grey darken-3 white--text">Status dos Alugueis</v-card-title>
                     <div id="chart">
-                        <apexchart v-if="!show" type="bar" width="450" :options="chartOptions" :series="series"></apexchart>
+                        <apexchart
+                            v-if="!show"
+                            type="radialBar"
+                            width="450"
+                            height="350"
+                            :options="chartOptions"
+                            :series="series"
+                        ></apexchart>
                     </div>
                 </v-card>
             </v-col>
             <!-- Latest records and modifications -->
             <v-col>
                 <v-card class="rounded" min-height="360" elevation="6">
-                    <v-card-title class="blue-grey darken-3 white--text">Últimos Registros ou Modificações</v-card-title>
+                    <v-card-title class="blue-grey darken-3 white--text">Livros mais alugados</v-card-title>
                     <div>
-                        <v-list>
-                            <!-- Editora -->
-                            <v-list-group color="blue-grey" prepend-icon="mdi-office-building">
-                                <template v-slot:activator>
-                                    <v-list-item-title>Editora</v-list-item-title>
-                                </template>
-                                <v-list-item link v-for="(value, name, i) in lastEditora" :key="i">
-                                    <v-list-item-content>
-                                        <b>{{ formatName(name) }}</b> {{ value }}
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list-group>
-                            <!-- Usuário -->
-                            <v-list-group color="blue-grey" prepend-icon="mdi-account-multiple">
-                                <template v-slot:activator>
-                                    <v-list-item-title>Usuário</v-list-item-title>
-                                </template>
-                                <v-list-item link v-for="(value, name, i) in lastUsuario" :key="i">
-                                    <v-list-item-content>
-                                        <b>{{ formatName(name) }}</b> {{ value }}
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list-group>
-                            <!-- Livro -->
-                            <v-list-group color="blue-grey" prepend-icon="mdi-book-multiple">
-                                <template v-slot:activator>
-                                    <v-list-item-title>Livro</v-list-item-title>
-                                </template>
-                                <v-list-item link v-for="(valueLastLivro, nameLastLivro, i) in lastLivro" :key="i">
-                                    <v-list-item-content v-if="!(typeof valueLastLivro === 'object')">
-                                        <b>{{ formatName(nameLastLivro) }}</b> {{ valueLastLivro }}
-                                    </v-list-item-content>
-                                    <v-list-item-content v-else>
-                                        <b>{{ formatName(nameLastLivro) }}</b>
-                                    </v-list-item-content>
-                                    <!-- Editora in Livro -->
-                                    <v-list-group v-if="typeof valueLastLivro === 'object'" color="blue-grey" sub-group>
-                                        <v-list-item link v-for="(valueEditora, nameEditora, i) in valueLastLivro" :key="i">
-                                            <v-list-item-content>
-                                                <b>{{ formatName(nameEditora) }}</b> {{ valueEditora }}
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                    </v-list-group>
-                                </v-list-item>
-                            </v-list-group>
-                            <!-- Aluguel -->
-                            <v-list-group color="blue-grey" prepend-icon="mdi-calendar-multiple">
-                                <template v-slot:activator>
-                                    <v-list-item-title>Aluguel</v-list-item-title>
-                                </template>
-                                <v-list-item link v-for="(valueLastAluguel, nameLastAluguel, i) in lastAluguel" :key="i">
-                                    <v-list-item-content v-if="!(typeof valueLastAluguel === 'object')">
-                                        <b>{{ formatName(nameLastAluguel) }}</b
-                                        >{{ valueLastAluguel }}
-                                    </v-list-item-content>
-                                    <v-list-item-content v-else>
-                                        <b>{{ formatName(nameLastAluguel) }}</b>
-                                    </v-list-item-content>
-                                    <!-- Livro or Usuario in Aluguel -->
-                                    <v-list-group
-                                        v-if="typeof valueLastAluguel === 'object' && valueLastAluguel !== null"
-                                        color="blue-grey"
-                                        sub-group
-                                    >
-                                        <v-list-item link v-for="(valueEntity, nameEntity, i) in valueLastAluguel" :key="i">
-                                            <v-list-item-content v-if="!(typeof valueEntity === 'object')">
-                                                <b>{{ formatName(nameEntity) }}</b> {{ valueEntity }}
-                                            </v-list-item-content>
-                                            <v-list-item-content v-else>
-                                                <b>{{ formatName(nameEntity) }}</b>
-                                            </v-list-item-content>
-                                            <!-- Editora in Livro in Aluguel -->
-                                            <v-list-group v-if="typeof valueEntity === 'object'" color="blue-grey" sub-group>
-                                                <v-list-item link v-for="(valueEditora, nameEditora, i) in valueEntity" :key="i">
-                                                    <v-list-item-content v-if="typeof valueEntity === 'object'">
-                                                        <b>{{ formatName(nameEditora) }}</b>
-                                                        {{ valueEditora }}
-                                                    </v-list-item-content>
-                                                    <v-list-item-content v-else>
-                                                        <b>{{ formatName(nameEditora) }}</b>
-                                                    </v-list-item-content>
-                                                </v-list-item>
-                                            </v-list-group>
-                                        </v-list-item>
-                                    </v-list-group>
-                                </v-list-item>
-                            </v-list-group>
-                        </v-list>
+                        <app-most-rented />
                     </div>
                 </v-card>
             </v-col>
@@ -140,18 +60,20 @@ import usuarioService from '../service/UsuarioService';
 import livroService from '../service/LivroService';
 import moment from 'moment';
 
+import MostRented from '../components/MostRented.vue';
+
 export default {
+    components: {
+        'app-most-rented': MostRented,
+    },
+
     data: () => ({
-        series: [
-            {
-                data: [0, 0, 0],
-            },
-        ],
+        series: [0, 0, 0],
 
         chartOptions: {
             chart: {
                 width: 380,
-                type: 'bar',
+                type: 'radialBar',
                 toolbar: {
                     show: false,
                 },
@@ -161,6 +83,10 @@ export default {
 
             labels: ['Pendente', 'Atrasado', 'No prazo'],
 
+            legend: {
+                show: true,
+            },
+
             tooltip: {
                 enabled: true,
                 fillSeriesCollor: true,
@@ -168,9 +94,30 @@ export default {
             },
 
             plotOptions: {
-                bar: {
-                    columnWidth: '45%',
-                    distributed: true,
+                radialBar: {
+                    dataLabels: {
+                        show: true,
+                        name: {
+                            show: true,
+                            fontSize: '22px',
+                        },
+                        value: {
+                            show: true,
+                            fontSize: '16px',
+                            formatter: val => {
+                                return parseInt(val);
+                            },
+                        },
+                        total: {
+                            show: true,
+                            corlor: '#373d3f',
+                            label: 'Total',
+                            formatter: w => {
+                                // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
+                                return w.globals.series[0] + w.globals.series[1] + w.globals.series[2];
+                            },
+                        },
+                    },
                 },
             },
 
@@ -188,6 +135,7 @@ export default {
                 },
             ],
         },
+
         alugueis: [],
         show: true,
         lastAluguel: {},
@@ -206,8 +154,9 @@ export default {
         initialize() {
             aluguelService.findAllNotPaged().then(res => {
                 this.alugueis = res.data;
-                this.show = !this.show;
                 this.setSeries(this.alugueis);
+                this.arraysLength[3] = res.data.length;
+                this.show = !this.show;
             });
             this.setLastEditora();
             this.setLastUsuario();
@@ -218,11 +167,11 @@ export default {
         setSeries(alugueis) {
             alugueis.forEach(aluguel => {
                 if (moment(aluguel.dataDevolucao, 'DD-MM-YYYY').isSameOrBefore(moment(aluguel.dataPrevisao, 'DD-MM-YYYY'))) {
-                    this.series[0].data[2]++;
+                    this.series[2]++;
                 } else if (moment(aluguel.dataDevolucao, 'DD-MM-YYYY').isAfter(moment(aluguel.dataPrevisao, 'DD-MM-YYYY'))) {
-                    this.series[0].data[1]++;
+                    this.series[1]++;
                 } else {
-                    this.series[0].data[0]++;
+                    this.series[0]++;
                 }
             });
         },
