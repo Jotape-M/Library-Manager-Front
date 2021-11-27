@@ -175,6 +175,11 @@ export default {
             value => !!value || 'Campo obrigatório',
             value => (value && value.length >= 3) || 'No mínimo 3 caracteres',
             value => (value && value.length <= 40) || 'No máximo 40 caracteres',
+            value => isNaN(value) || 'Não pode ser somente caracteres numéricos',
+            value => {
+                const pattern = /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/;
+                return pattern.test(value) || 'Caracteres especiais não permitidos';
+            },
         ],
     }),
 

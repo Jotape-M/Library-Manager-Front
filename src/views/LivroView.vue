@@ -42,7 +42,7 @@
                                                     <v-text-field
                                                         v-model="livro.nome"
                                                         label="Nome"
-                                                        :rules="[rules.required, rules.counterMin, rules.counterMax40]"
+                                                        :rules="[rules.required, rules.counterMin, rules.counterMax40, rules.nome]"
                                                         outlined
                                                         hint="Digite o nome do livro"
                                                         counter="40"
@@ -55,7 +55,7 @@
                                                     <v-text-field
                                                         v-model="livro.autor"
                                                         label="Autor"
-                                                        :rules="[rules.required, rules.counterMin, rules.counterMax40]"
+                                                        :rules="[rules.required, rules.counterMin, rules.counterMax40, rules.autor]"
                                                         outlined
                                                         hint="Digite o autor do livro"
                                                         counter="40"
@@ -264,6 +264,14 @@ export default {
             counterMax40: value => (value && value.length <= 40) || 'No máximo 40 caracteres',
             requiredEditora: value => value == undefined || 'Escolha uma editora',
             requiredNumber: value => !isNaN(value) || 'Somente caracteres numéricos',
+            nome: value => {
+                const pattern = /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/;
+                return pattern.test(value) || 'Nome inválido.';
+            },
+            autor: value => {
+                const pattern = /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/;
+                return pattern.test(value) || 'Nome do autor inválido.';
+            },
         },
     }),
 

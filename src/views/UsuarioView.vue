@@ -47,9 +47,9 @@
                                                     <v-text-field
                                                         v-model="usuario.nome"
                                                         label="Nome"
-                                                        :rules="[rules.required, rules.counterMin, rules.counterMax40]"
+                                                        :rules="[rules.required, rules.counterMin, rules.counterMax40, rules.nome]"
                                                         outlined
-                                                        hint="Digite o nome da usuario"
+                                                        hint="Digite o nome do usuario"
                                                         color="blue-grey"
                                                         counter="40"
                                                     ></v-text-field>
@@ -60,10 +60,10 @@
                                                     <v-text-field
                                                         v-model="usuario.cidade"
                                                         label="Cidade"
-                                                        :rules="[rules.required, rules.counterMin, rules.counterMax40]"
+                                                        :rules="[rules.required, rules.counterMin, rules.counterMax40, rules.cidade]"
                                                         outlined
                                                         color="blue-grey"
-                                                        hint="Digite a cidade da usuario"
+                                                        hint="Digite a cidade do usuario"
                                                         counter="40"
                                                     ></v-text-field>
                                                 </v-col>
@@ -89,7 +89,7 @@
                                                         :rules="[rules.email, rules.counterMax50]"
                                                         outlined
                                                         color="blue-grey"
-                                                        hint="Digite o e-mail da usuario"
+                                                        hint="Digite o e-mail do usuario"
                                                         counter="50"
                                                     ></v-text-field>
                                                 </v-col>
@@ -221,6 +221,14 @@ export default {
             email: value => {
                 const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 return pattern.test(value) || 'E-mail invalido.';
+            },
+            nome: value => {
+                const pattern = /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/;
+                return pattern.test(value) || 'Nome inválido.';
+            },
+            cidade: value => {
+                const pattern = /^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/;
+                return pattern.test(value) || 'Nome da cidade inválido.';
             },
         },
     }),
