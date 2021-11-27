@@ -247,7 +247,7 @@ export default {
     methods: {
         initialize() {
             this.loading = true;
-            const params = this.getRequestParams();
+            const params = this.getRequestParams(this.page, this.pageSize);
             UsuarioService.findAll(params).then(res => {
                 const { content, totalElements, totalPages } = res.data;
                 this.usuarios = content;
