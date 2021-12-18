@@ -154,7 +154,7 @@
                                                     </v-menu>
                                                 </v-col>
                                             </v-row>
-                                            <v-row>
+                                            <v-row v-if="show">
                                                 <v-col cols="12">
                                                     <v-menu
                                                         v-model="menuDevolucao"
@@ -268,6 +268,7 @@ export default {
     name: 'App',
 
     data: () => ({
+        show: false,
         dialog: false,
         dialogDelete: false,
         loading: true,
@@ -405,6 +406,7 @@ export default {
             this.aluguel.dataPrevisao = item.dataPrevisao;
             this.aluguel.dataDevolucao = item.dataDevolucao;
             this.dialog = true;
+            this.show = !this.show;
         },
 
         returnBook(item) {
@@ -425,6 +427,7 @@ export default {
 
         close() {
             this.dialog = false;
+            this.show = false;
             this.$refs.form.resetValidation();
             if (!this.dialog) {
                 this.dateAluguel = '';
